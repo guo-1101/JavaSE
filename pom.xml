@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Maven的配置文件是以project为根节点-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--    modelVersion定义了当前模型的版本-->
+    <modelVersion>4.0.0</modelVersion>
+<!--    groupId、artifactId、version这三个元素合在一起，用于唯一区别每个项目，我们称为一个项目的基本坐标，自己的Maven坐标。-->
+<!--    groupId 一般用于指定组名称，命名规则一般和包名一致-->
+<!--    artifactId 一般用于指定项目在当前组中的唯一名称，也就是说在组中用于区分于其他项目的标记。-->
+<!--    version 代表项目版本，（这里的SNAPSHOT代表快照，一般表示这是一个处于开发中的项目，正式发布项目一般只带版本号）-->
+    <groupId>org.example</groupId>
+    <artifactId>javase</artifactId>
+    <version>1.0-SNAPSHOT</version>
+<!--    properties中一般都是一些变量和选项的配置，我们这里指定了JDK的源代码和编译版本为17-->
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+<!--    使用Maven管理项目-->
+<!--    Maven ，是 Apache 下的一个纯 Java 开发的开源项目。Maven利用一个中央信息片断能管理一个项目的构建、报告和文档等步骤。
+        Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。-->
+
+<!--    通过Maven，可以帮助我们做：-->
+<!--    项目的自动构建，包括代码的编译、测试、打包、安装、部署等操作。-->
+<!--    依赖管理，项目使用到哪些依赖，可以快速完成导入。-->
+
+
+<!--    1.Maven依赖导入-->
+<!--    https://mvnrepository.com/ 进行查询-->
+
+<!--    Maven项目的依赖管理流程-->
+<!--    一个项目依赖一般是存储在中央仓库中，也有可能存储在一些其他的远程仓库（私服），几乎所有的依赖都被放到了中央仓库中，
+        因此，Maven可以直接从中央仓库中下载大部分的依赖（Maven第一次导入依赖是需要联网的），远程仓库中下载之后 ，会暂时存储在本地仓库，
+        我们会发现我们本地存在一个.m2文件夹，这就是Maven本地仓库文件夹，默认建立在C盘-->
+<!--    本地仓库（.m2） <=======> 中央仓库、远程仓库-->
+
+<!--    2.Maven依赖作用域-->
+<!--    -scope：依赖的作用域范围-->
+<!--    compile ：为默认的依赖有效范围。如果在定义依赖关系的时候，没有明确指定依赖有效范围的话，则默认采用该依赖有效范围。
+        此种依赖，在编译、运行、测试时均有效。-->
+<!--    provided ：在编译、测试时有效，但是在运行时无效，
+        比如我们上面的Lombok，我们只需要在编译阶段使用它，编译完成后，实际上已经转换为对应的代码了，因此Lombok不需要在项目运行时也存在。-->
+<!--    runtime ：在运行、测试时有效，但是在编译代码时无效。-->
+<!--    test ：只在测试时有效，例如：JUnit，我们一般只会在测试阶段使用JUnit，而实际项目运行时，我们就用不到测试了-->
+<!--    system：作用域和provided是一样的，但是它不是从远程仓库获取，而是直接导入本地Jar包，
+        如果我需要的依赖没有上传的远程仓库，而是只有一个Jar怎么办呢？我们可以使用第四种作用域-->
+
+<!--    3.Maven可选依赖-->
+<!--    当项目中的某些依赖不希望被使用此项目作为依赖的项目使用时，我们可以给依赖添加optional标签表示此依赖是可选的，
+        默认在导入依赖时，不会导入可选的依赖-->
+<!--    -optional：标记依赖是否可选-->
+
+<!--    4.Maven排除依赖-->
+<!--    -exclusions：用来排除传递性依赖（一个项目有可能依赖于其他项目）-->
+
+<!--    创建一个dependencies节点-->
+    <dependencies>
+<!--        //里面填写的就是所有的依赖-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+<!--            第四种作用域：如果scope为system，那么我们需要添加一个systemPath来指定jar文件的位置。-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>C://学习资料/4K高清无码/test.jar</systemPath>-->
+<!--            可选依赖-->
+<!--            <optional>true</optional>-->
+<!--            排除依赖-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.junit.jupiter</groupId>-->
+<!--                    <artifactId>junit-jupiter-engine</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+        </dependency>
+    </dependencies>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</project>
