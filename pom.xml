@@ -12,7 +12,13 @@
     <groupId>org.example</groupId>
     <artifactId>javase</artifactId>
     <version>1.0-SNAPSHOT</version>
-<!--    properties中一般都是一些变量和选项的配置，我们这里指定了JDK的源代码和编译版本为17-->
+<!--    子项目新增的-->
+    <packaging>pom</packaging>
+    <modules>
+        <module>maven1</module>
+        <module>maven2</module>
+    </modules>
+    <!--    properties中一般都是一些变量和选项的配置，我们这里指定了JDK的源代码和编译版本为17-->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -20,13 +26,11 @@
     </properties>
 
 <!--    使用Maven管理项目-->
-<!--    Maven ，是 Apache 下的一个纯 Java 开发的开源项目。Maven利用一个中央信息片断能管理一个项目的构建、报告和文档等步骤。
-        Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。-->
+<!--    Maven ，是 Apache 下的一个纯 Java 开发的开源项目。Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。-->
 
 <!--    通过Maven，可以帮助我们做：-->
 <!--    项目的自动构建，包括代码的编译、测试、打包、安装、部署等操作。-->
 <!--    依赖管理，项目使用到哪些依赖，可以快速完成导入。-->
-
 
 <!--    1.Maven依赖导入-->
 <!--    https://mvnrepository.com/ 进行查询-->
@@ -56,7 +60,74 @@
 <!--    4.Maven排除依赖-->
 <!--    -exclusions：用来排除传递性依赖（一个项目有可能依赖于其他项目）-->
 
-<!--    创建一个dependencies节点-->
+<!--    5.Maven继承关系-->
+<!--    一个Maven项目可以继承自另一个Maven项目，比如多个子项目都需要父项目的依赖，我们就可以使用继承关系来快速配置。-->
+<!--    5.1右键左侧栏 ==> 新建 新模块 ==> 选择Maven新建-->
+<!--    5.2IDEA默认给我们添加了一个parent节点，表示此Maven项目是父Maven项目的子项目，子项目会直接继承父项目的所有依赖-->
+<!--    5.3我们还可以让父Maven项目统一管理所有的依赖，包括版本号等，子项目可以选取需要的作为依赖，而版本全由父项目管理，
+        我们可以将dependencies全部放入dependencyManagement节点，这样父项目就完全作为依赖统一管理。-->
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>org.projectlombok</groupId>-->
+<!--                <artifactId>lombok</artifactId>-->
+<!--                <version>1.18.22</version>-->
+<!--                <scope>provided</scope>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+<!--    子项目的依赖失效了，因为现在父项目没有依赖，而是将所有的依赖进行集中管理，
+        子项目需要什么再拿什么即可，同时子项目无需指定版本，所有的版本全部由父项目决定，子项目只需要使用即可-->
+<!--    5.4当然，父项目如果还存在dependencies节点的话，里面的内依赖依然是直接继承-->
+<!--    5.5子项目之间相互引用，子项目1可以作为子项目2的依赖，可以直接用子项目1的类-->
+
+<!--    6.Maven常用命令-->
+<!--    每个Maven项目都有一个生命周期，实际上这些是Maven的一些插件，每个插件都有各自的功能-->
+<!--    clean命令，执行后会清理整个target文件夹，在之后编写Springboot项目时可以解决一些缓存没更新的问题。-->
+<!--    validate命令可以验证项目的可用性。-->
+<!--    compile命令可以将项目编译为.class文件。-->
+<!--    install命令可以将当前项目安装到本地仓库，以供其他项目导入作为依赖使用-->
+<!--    verify命令可以按顺序执行每个默认生命周期阶段（validate，compile，package等）-->
+
+<!--    7.Maven打包项目-->
+<!--    项目在编写完成之后，要么作为Jar依赖，供其他模型使用，要么就作为一个可以执行的程序，在控制台运行，
+        我们只需要直接执行package命令就可以直接对项目的代码进行打包，生成jar文件。-->
+<!--    双击package-->
+
+<!--    以上方式仅适用于作为Jar依赖的情况，如果我们需要打包一个可执行文件，那么我不仅需要将自己编写的类打包到Jar中，
+        同时还需要将依赖也一并打包到Jar中，因为我们使用了别人为我们通过的框架，自然也需要运行别人的代码，我们需要使用另一个插件来实现一起打包-->
+<!--    <plugin>-->
+<!--        <artifactId>maven-assembly-plugin</artifactId>-->
+<!--        <version>3.1.0</version>-->
+<!--        <configuration>-->
+<!--            <descriptorRefs>-->
+<!--                <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--            </descriptorRefs>-->
+<!--            <archive>-->
+<!--                <manifest>-->
+<!--                    <addClasspath>true</addClasspath>-->
+<!--                    <mainClass>com.test.Main</mainClass>-->
+<!--                </manifest>-->
+<!--            </archive>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--            <execution>-->
+<!--                <id>make-assembly</id>-->
+<!--                <phase>package</phase>-->
+<!--                <goals>-->
+<!--                    <goal>single</goal>-->
+<!--                </goals>-->
+<!--            </execution>-->
+<!--        </executions>-->
+<!--    </plugin>-->
+<!--    选择 执行Maven目标 来手动执行Maven命令，输入mvn package -Dmaven.test.skip=true来以跳过测试的方式进行打包。-->
+<!--    最后得到我们的Jar文件，在同级目录下输入java -jar xxxx.jar来运行我们打包好的Jar可执行程序（xxx代表文件名称）-->
+<!--    多模块项目，那么多模块下父项目存在一个packing打包类型标签，所有的父级项目的packing都为pom，packing默认是jar类型，如果不作配置，
+        maven会将该项目打成jar包。作为父级项目，还有一个重要的属性，那就是modules，通过modules标签将项目的所有子项目引用进来，
+        在build父级项目时，会根据子模块的相互依赖关系整理一个build顺序，然后依次build。-->
+
+
+    <!--    创建一个dependencies节点-->
     <dependencies>
 <!--        //里面填写的就是所有的依赖-->
         <dependency>
@@ -78,17 +149,6 @@
 <!--            </exclusions>-->
         </dependency>
     </dependencies>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </project>
